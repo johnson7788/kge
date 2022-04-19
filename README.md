@@ -64,12 +64,10 @@ kge start examples/toy-complex-train.yaml --job.device cpu
    - Entity ranking metrics: Mean Reciprocal Rank (MRR), HITS@k with/without filtering
    - Drill-down by: relation type, relation frequency, head or tail
  - **扩展日志和tracing**
-   - Detailed progress information about training, hyper-parameter tuning, and evaluation 
-     is recorded in machine readable formats
-   - Quick export of all/selected parts of the traced data into CSV or YAML files to 
-     facilitate analysis
+   - 关于训练、超参数调整和评估的详细进展信息以机器可读的格式记录下来
+   - 将所有/选定的部分追踪数据快速导出到CSV或YAML文件中，以方便分析。
  - **KGE models**
-   - All models can be used with or without reciprocal relations
+   - 所有模型都可以在有或没有交互关系的情况下使用 
    - [RESCAL](http://www.icml-2011.org/papers/438_icmlpaper.pdf) ([code](kge/model/rescal.py), [config](kge/model/rescal.yaml))
    - [TransE](https://papers.nips.cc/paper/5071-translating-embeddings-for-modeling-multi-relational-data) ([code](kge/model/transe.py), [config](kge/model/transe.yaml))
    - [TransH](https://ojs.aaai.org/index.php/AAAI/article/view/8870) ([code](kge/model/transh.py), [config](kge/model/transh.yaml))
@@ -86,30 +84,17 @@ kge start examples/toy-complex-train.yaml --job.device cpu
    - Projection embedder ([code](kge/model/embedder/projection_embedder.py), [config](kge/model/embedder/projection_embedder.yaml))
 
 
-## Results and pretrained models
+## 结果和预训练的模型
 
-We list some example results (filtered MRR and HITS@k on test data) obtained with
-LibKGE below. These results are obtained by running automatic hyperparameter
-search as described [here](https://github.com/uma-pi1/kge-iclr20). 
+我们在下面列出一些用LibKGE获得的例子结果（测试数据上的过滤MRR和HITS@k）。这些结果是通过运行自动超参数搜索获得的，如[此处]所述(https://github.com/uma-pi1/kge-iclr20)。
 
-These results are not necessarily the best results that can be achieved using LibKGE, 
-but they are comparable in that a common experimental setup (and equal amount of work)
-has been used for hyperparameter optimization for each model. Since we use **filtered MRR 
-for model selection**, our results may not be indicative of the achievable model performance 
-for other validation metrics (such as HITS@10, which has been used for model selection 
-elsewhere). 
+这些结果不一定是使用LibKGE所能达到的最佳结果，但它们具有可比性，因为每个模型的超参数优化都采用了共同的实验设置（和同等的工作量）。
+由于我们使用**过滤的MRR进行模型选择**，我们的结果可能不能说明其他验证指标（如HITS@10，该指标已被用于其他地方的模型选择）可实现的模型性能。
 
-We report performance numbers on the entire test set, **including the
-triples that contain entities not seen during training**. This is not done
-consistently throughout existing KGE implementations: some frameworks remove
-unseen entities from the test set, which leads to a perceived increase in
-performance (e.g., roughly add +3pp to our WN18RR MRR numbers for this method of
-evaluation).
+我们报告了整个测试集的性能数字，**包括在训练期间没有看到的实体的三元组**。
+在现有的KGE实现中，这种做法并不一致：一些框架从测试集中移除未见过的实体，这导致了性能的明显提高（例如，对于这种评估方法，我们的WN18RR MRR数字大约增加了+3pp）。
 
-We also provide pretrained models for these results. Each pretrained model is
-given in the form of a LibKGE checkpoint, which contains the model as well as
-additional information (such as the configuration being used). See the
-documentation below on how to use checkpoints.
+我们还为这些结果提供了预训练的模型。每个预训练的模型都以LibKGE checkpoint的形式给出，其中包含了模型以及其他信息（如正在使用的配置）。关于如何使用checkpoint，请参见下面的文档。
 
 #### FB15K-237 (Freebase)
 
@@ -157,22 +142,16 @@ documentation below on how to use checkpoints.
 
 #### Wikidata5M (Wikidata)
 
-LibKGE supports large datasets such as Wikidata5M (4.8M entities). The result
-given below was found by automatic hyperparameter search similar to the one used
-for the smaller datasets above, but with some values fixed (training with shared
-negative sampling, embedding dimension: 128, batch size: 1024, optimizer:
-Adagrad, regularization: weighted). We ran 30 pseudo-random configurations for
-20 epochs, and then reran the configuration that performed best on validation
-data for 200 epochs.
+LibKGE支持大型数据集，如Wikidata5M（4.8M实体）。下面给出的结果是通过自动超参数搜索找到的，类似于上面用于较小数据集的超参数搜索，但有些值是固定的
+（用共享负采样训练，嵌入维度：128，批次大小：1024，优化器：Adagrad，正规化：加权）。
+我们在20个epoch中运行了30个伪随机配置，然后在200个epoch中重新运行在验证数据上表现最好的配置。
 
 |                                                             |   MRR | Hits@1 | Hits@3 | Hits@10 |                                                                                    Config file |                                                                            Pretrained model |
 |-------------------------------------------------------------|------:|-------:|-------:|--------:|-----------------------------------------------------------------------------------------------:|--------------------------------------------------------------------------------------------:|
 | [ComplEx](http://proceedings.mlr.press/v48/trouillon16.pdf) | 0.301 |  0.245 |  0.331 |   0.397 | [config.yaml](http://web.informatik.uni-mannheim.de/pi1/libkge-models/wikidata5m-complex.yaml) | [NegSamp-kl](http://web.informatik.uni-mannheim.de/pi1/libkge-models/wikidata5m-complex.pt) |
 
 #### Yago3-10 (YAGO)
-
-The result given below was found by the same automatic hyperparameter search used for Wikidata5M. We reran the configuration that performed best on validation data for 400 epochs.
-
+下面给出的结果是由用于Wikidata5M的相同的自动超参数搜索发现的。我们重演了在验证数据上表现最好的配置，并进行了400次epoch。
 
 |                                                             |   MRR | Hits@1 | Hits@3 | Hits@10 |                                                                                    Config file |                                                                            Pretrained model |
 |-------------------------------------------------------------|------:|-------:|-------:|--------:|-----------------------------------------------------------------------------------------------:|--------------------------------------------------------------------------------------------:|
@@ -180,11 +159,8 @@ The result given below was found by the same automatic hyperparameter search use
 
 #### CoDEx
 
-[CoDEx](https://github.com/tsafavi/codex) is a Wikidata-based KG completion
-benchmark. The results here have been obtained using the automatic
-hyperparameter search used for the Freebase and WordNet datasets, but with fewer
-epochs and Ax trials for CoDEx-M and CoDEx-L. See the [CoDEx
-paper](https://arxiv.org/pdf/2009.07810.pdf) (EMNLP 2020) for details.
+[CoDEx](https://github.com/tsafavi/codex) 是一个基于Wikidata的KG完成基准。这里的结果是使用用于Freebase和WordNet数据集的自动超参数搜索获得的，
+但CoDEx-M和CoDEx-L的epoch和Ax试验较少。 See the [CoDEx paper](https://arxiv.org/pdf/2009.07810.pdf) (EMNLP 2020) for details.
 
 ##### CoDEx-S
 
@@ -217,18 +193,12 @@ paper](https://arxiv.org/pdf/2009.07810.pdf) (EMNLP 2020) for details.
 | ConvE | 0.303 | 0.240 | 0.3298 | 0.420 | [config.yaml](https://github.com/tsafavi/codex/tree/master/models/link-prediction/codex-l/conve/config.yaml) | [1vsAll-kl](https://www.dropbox.com/s/qcfjy6i1sqbec0z/codex-l-lp-conve.pt?dl=0) |
 | TuckER | 0.309 | 0.244 | 0.3395 | 0.430 | [config.yaml](https://github.com/tsafavi/codex/tree/master/models/link-prediction/codex-l/tucker/config.yaml) | [KvsAll-kl](https://www.dropbox.com/s/j8u4nqwzz3v7jw1/codex-l-lp-tucker.pt?dl=0) |
 
-## Using LibKGE
+## 使用 LibKGE
+LibKGE支持KGE模型的训练、评估和超参数调整。
+每个任务的设置可以通过YAML格式的配置文件或命令行来指定。可用设置的默认值和用法可以在[config-default.yaml](kge/config-default.yaml)以及特定于模型和嵌入的配置文件（如[lookup_embedder.yaml](kge/model/embedder/lookup_embedder.yaml)).
 
-LibKGE supports training, evaluation, and hyperparameter tuning of KGE models.
-The settings for each task can be specified with a configuration file in YAML
-format or on the command line. The default values and usage for available
-settings can be found in [config-default.yaml](kge/config-default.yaml) as well
-as the model- and embedder-specific configuration files (such as
-[lookup_embedder.yaml](kge/model/embedder/lookup_embedder.yaml)).
-
-#### Train a model
-
-First create a configuration file such as:
+#### 训练一个模型
+首先创建一个配置文件，如：
 
 ```yaml
 job.type: train
@@ -249,29 +219,26 @@ lookup_embedder:
   regularize_weight: 0.8e-7
 ```
 
-To begin training, run one of the following:
+要开始训练，请运行以下其中一项。
 
 ```sh
-# Store the file as `config.yaml` in a new folder of your choice. Then initiate or resume
-# the training job using:
+# 将该文件作为`config.yaml`存储在你选择的新文件夹中。然后用以下方法启动或恢复训练工作。
 kge resume <folder>
 
-# Alternatively, store the configuration anywhere and use the start command
-# to create a new folder
+# 或者，将配置存储在任何地方，并使用start命令创建一个新的文件夹
 #   <kge-home>/local/experiments/<date>-<config-file-name>
-# with that config and start training there.
+# 并在那里开始训练。
 kge start <config-file>
 
-# In both cases, configuration options can be modified on the command line, too: e.g.,
+# 在这两种情况下，可以在命令行上修改配置选项, too: e.g.,
 kge start <config-file> config.yaml --job.device cuda:0 --train.optimizer Adam
 ```
 
-Various checkpoints (including model parameters and configuration options) will
-be created during training. These checkpoints can be used to resume training (or any other job type such as hyperparameter search jobs).
+各种checkpoint（包括模型参数和配置选项）将在训练期间被创建。这些checkpoint可用于恢复训练（或任何其他工作类型，如超参数搜索工作）。
 
-#### Resume training
+#### 恢复训练
 
-All of LibKGE's jobs can be interrupted (e.g., via `Ctrl-C`) and resumed (from one of its checkpoints). To resume a job, use:
+所有LibKGE的job都可以被中断（例如，通过`Ctrl-C`）和恢复（从它的某个checkpoint）。要恢复一个job，请使用。
 
 ```sh
 kge resume <folder>
@@ -280,32 +247,27 @@ kge resume <folder>
 kge resume <folder> --job.device cuda:1
 ```
 
-By default, the last checkpoint file is used. The filename of the checkpoint can be overwritten using ``--checkpoint``.
+默认情况下，使用最后一个checkpoint文件。checkpoint的文件名可以用`--checkpoint'来覆盖。
 
+#### 评估一个训练过的模型
 
-#### Evaluate a trained model
-
-To evaluate trained model, run the following:
+为了评估训练好的模型，运行以下内容。
 
 ```sh
-# Evaluate a model on the validation split
+# 在验证分割上评估一个模型
 kge valid <folder>
 
-# Evaluate a model on the test split
+# 在测试分割上评估一个模型
 kge test <folder>
 ```
+默认情况下，使用名为``checkpoint_best.pt``的checkpoint文件（存储迄今为止的最佳验证结果）。checkpoint的文件名可以用`--checkpoint'来覆盖。
 
-By default, the checkpoint file named ``checkpoint_best.pt`` (which stores the best validation result so far) is used. The filename of the checkpoint can be overwritten using ``--checkpoint``.
+#### 超参数优化
 
-#### Hyperparameter optimization
+LibKGE支持各种形式的超参数优化，如网格搜索或贝叶斯优化。搜索类型和搜索空间在配置文件中指定。
+例如，您可以使用[Ax](https://ax.dev/)进行SOBOL（伪随机）和贝叶斯优化。
 
-LibKGE supports various forms of hyperparameter optimization such as grid search
-or Bayesian optimization. The search type and search space are specified in the
-configuration file. For example, you may use [Ax](https://ax.dev/) for SOBOL
-(pseudo-random) and Bayesian optimization.
-
-The following config file defines a search of 10 SOBOL trials (arms) followed by
-20 Bayesian optimization trials:
+下面的配置文件定义了10个SOBOL试验（arms）的搜索，然后是20个贝叶斯优化试验。
 
 ```yaml
 job.type: search
@@ -329,8 +291,7 @@ ax_search:
       type: fixed
       value: 1vsAll
 ```
-
-Trials can be run in parallel across several devices:
+试验可以在几个设备上并行运行。
 
 ```sh
 # Run 4 trials in parallel evenly distributed across two GPUs
@@ -340,34 +301,28 @@ kge resume <folder> --search.device_pool cuda:0,cuda:1 --search.num_workers 4
 kge resume <folder> --search.device_pool cuda:0,cuda:1,cuda:1 --search.num_workers 3
 ```
 
-#### Export and analyze logs and checkpoints
+#### 输出和分析日志和checkpoint
 
-Extensive logs are stored as YAML files (hyperparameter search, training,
-validation). LibKGE provides a convenience methods to export the log data to
-CSV.
+大量的日志被存储为YAML文件（超参数搜索、训练、验证）。LibKGE提供了一种方便的方法，可以将日志数据导出为CSV。
 
 ```sh
 kge dump trace <folder>
 ```
 
-The command above yields CSV output such as [this output for a training
-job](docs/examples/dump-example-model.csv) or [this output for a search
+上面的命令产生的CSV输出，如 [this output for a training job](docs/examples/dump-example-model.csv) or [this output for a search
 job](https://github.com/uma-pi1/kge-iclr20/blob/master/data_dumps/iclr2020-fb15k-237-all-trials.csv).
-Additional configuration options or metrics can be added to the CSV files as
-needed (using a [keys
+可以根据需要在CSV文件中添加额外的配置选项或指标 (using a [keys
 file](https://github.com/uma-pi1/kge-iclr20/blob/master/scripts/iclr2020_keys.conf)).
 
-Information about a checkpoint (such as the configuration that was used,
-training loss, validation metrics, or explored hyperparameter configurations)
-can also be exported from the command line (as YAML):
+有关checkpoint的信息（如使用的配置、训练损失、验证指标或探索的超参数配置）也可以从命令行导出（作为YAML）。
 
 ```sh
 kge dump checkpoint <checkpoint>
 ```
 
-Configuration files can also be dumped in various formats.
+配置文件也可以以各种格式导出。
 ```sh
-# dump just the configuration options that are different from the default values
+# 只导出与默认值不同的配置选项
 kge dump config <config-or-folder-or-checkpoint>
 
 # dump the configuration as is
@@ -378,7 +333,7 @@ kge dump config <config-or-folder-or-checkpoint> --full
 
 ```
 
-#### Help and other commands
+#### 帮助和其他命令
 
 ```sh
 # help on all commands
@@ -388,11 +343,9 @@ kge --help
 kge dump --help
 ```
 
-#### Use a pretrained model in an application
-
-Using a trained model trained with LibKGE is straightforward. In the following
-example, we load a checkpoint and predict the most suitable object for a two
-subject-relations pairs: ('Dominican Republic', 'has form of government', ?) and
+#### 在一个应用程序中使用预训练的模型
+使用用LibKGE训练的模型是很简单的。在下面的例子中，我们加载一个checkpoint，并预测两个主题关系对的最合适对象。
+('Dominican Republic', 'has form of government', ?) and
 ('Mighty Morphin Power Rangers', 'is tv show with actor', ?).
 
 ```python
@@ -400,7 +353,7 @@ import torch
 from kge.model import KgeModel
 from kge.util.io import load_checkpoint
 
-# download link for this checkpoint given under results above
+# 该checkpoint的下载链接在上述结果中给出。
 checkpoint = load_checkpoint('fb15k-237-rescal.pt')
 model = KgeModel.create_from(checkpoint)
 
@@ -424,13 +377,13 @@ print(model.dataset.entity_strings(o))
 
 For other scoring functions (score_sp, score_po, score_so, score_spo), see [KgeModel](kge/model/kge_model.py#L455).
 
-#### Use your own dataset
+#### 使用你自己的数据集
 
-To use your own dataset, create a subfolder `mydataset` (= dataset name) in the `data` folder. You can use your dataset later by specifying `dataset.name: mydataset` in your job's configuration file.
+要使用你自己的数据集，在`data`文件夹中创建一个子文件夹`mydataset`（=数据集名称）。你可以通过在job的配置文件中指定`dataset.name: mydataset`来使用你的数据集。
+每个数据集都由一个`dataset.yaml`文件描述，需要存储在`mydataset`文件夹中。在执行完[快速入门说明](#quick-start)后，看看`data/toy/dataset.yaml'下提供的toy例子。配置键和文件格式都有记录 [here](https://github.com/uma-pi1/kge/blob/2b693e31c4c06c71336f1c553727419fe01d4aa6/kge/config-default.yaml#L48).
 
-Each dataset is described by a `dataset.yaml` file, which needs to be stored in the `mydataset` folder. After performing the [quickstart instructions](#quick-start), have a look at the provided toy example under `data/toy/dataset.yaml`. The configuration keys and file formats are documented  [here](https://github.com/uma-pi1/kge/blob/2b693e31c4c06c71336f1c553727419fe01d4aa6/kge/config-default.yaml#L48).
+您的数据可以被自动预处理并转换为LibKGE所要求的格式。下面是`toy`数据集的相关部分，请看。
 
-Your data can be automatically preprocessed and converted into the format required by LibKGE. Here is the relevant part for the `toy` dataset, which see:
 ```sh
 # download
 curl -O http://web.informatik.uni-mannheim.de/pi1/kge-datasets/toy.tar.gz
@@ -441,28 +394,25 @@ python preprocess/preprocess_default.py toy
 ```
 
 
-## Currently supported KGE models
+## 目前支持的KGE模型
 
-LibKGE currently implements the KGE models listed in [features](#features).
+LibKGE目前实现的KGE模型列在 [features](#features).
 
-The [examples](examples) folder contains some configuration files as examples of how to train these models.
+[examples](examples)文件夹包含一些配置文件，作为如何训练这些模型的例子。
 
-We welcome contributions to expand the list of supported models! Please see [CONTRIBUTING](CONTRIBUTING.md) for details and feel free to initially open an issue.
+我们欢迎为扩大支持的模型列表做出贡献! 请参阅[CONTRIBUTING](CONTRIBUTING.md)了解详情，并可自由地最初打开一个问题。
 
-## Extending LibKGE
+## 扩展 LibKGE
 
-LibKGE can be extended with new training, evaluation, or search jobs as well as
-new models and embedders.
+LibKGE可以通过新的训练、评估或搜索工作以及新的模型和嵌入器进行扩展。
 
-KGE models implement the `KgeModel` class and generally consist of a
-`KgeEmbedder` to associate each subject, relation and object to an embedding and
-a `KgeScorer` to score triples given their embeddings. All these base classes
-are defined in [kge_model.py](kge/model/kge_model.py). 
+KGE模型实现了 "KgeModel "类，通常由 "KgeEmbedder "和 "KgeScorer "组成，
+前者将每个主语、关系和对象与一个嵌入相关联，后者则根据嵌入情况对三元祖进行评分。
+所有这些基类都定义在 [kge_model.py](kge/model/kge_model.py). 
 
-KGE jobs perform training, evaluation, and hyper-parameter search. The relevant base classes are [Job](kge/job/job.py), [TrainingJob](kge/job/train.py), [EvaluationJob](kge/job/eval.py), and [SearchJob](kge/job/search.py).
+KGE工作执行训练、评估和超参数搜索。 The relevant base classes are [Job](kge/job/job.py), [TrainingJob](kge/job/train.py), [EvaluationJob](kge/job/eval.py), and [SearchJob](kge/job/search.py).
 
-To add a component, say `mycomp` (= a model, embedder, or job) with
-implementation `MyClass`, you need to:
+要添加一个组件，例如`mycomp`（=一个模型、嵌入器或job），并实现`MyClass`，你需要。
 
 1. Create a configuration file `mycomp.yaml`. You may store this file directly
    in the LibKGE module folders (e.g., `<kge-home>/kge/model/`) or in your own
@@ -494,13 +444,13 @@ implementation `MyClass`, you need to:
 
 ## FAQ
 
-#### Are the configuration options documented somewhere?
+#### 配置选项是否在某处有记录?
 Yes, see [config-default.yaml](https://github.com/uma-pi1/kge/blob/master/kge/config-default.yaml) as well as the configuration files for each component listed [above](#features).
 
-#### Are the command line options documented somewhere?
+#### 命令行选项是否在某处有记录?
 Yes, try `kge --help`. You may also obtain help for subcommands, e.g., try `kge dump --help` or `kge dump trace --help`.
 
-#### LibKGE runs out of memory. What can I do?
+#### LibKGE的内存用完了。我可以做什么呢？
 - For training, set `train.subbatch_auto_tune` to true (equivalent result, less memory but slower).
 - For evaluation, set `entity_ranking.chunk_size` to, say, 10000 (equivalent result, less memory but slightly slower, the more so the smaller the chunk size).
 - Change hyperparameters (non-equivalent result): e.g., decrease the batch size, use negative sampling, use less samples).
