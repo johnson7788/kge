@@ -1,47 +1,36 @@
 # <img src="docs/source/images/logo/libkge-header-2880.png" alt="LibKGE: A knowledge graph embedding library" width="80%">
 
-LibKGE is a PyTorch-based library for efficient training, evaluation, and
-hyperparameter optimization of [knowledge graph
-embeddings](https://ieeexplore.ieee.org/document/8047276) (KGE). It is highly
-configurable, easy to use, and extensible. Other KGE frameworks are [listed
-below](#other-kge-frameworks).
+LibKGE是一个基于PyTorch的库，用于高效的训练、评估和超参数优化 [knowledge graph embeddings](https://ieeexplore.ieee.org/document/8047276) (KGE). 
+它是高度可配置的，易于使用和可扩展的。其他KGE框架有 [listed below](#other-kge-frameworks).
 
-The key goal of LibKGE is to foster *reproducible research* into (as well as
-meaningful comparisons between) KGE models and training methods. As we argue in
-our [ICLR 2020 paper](https://github.com/uma-pi1/kge-iclr20)
-(see [video](https://iclr.cc/virtual_2020/poster_BkxSmlBFvr.html)), the choice
-of training strategy and hyperparameters are very influential on model performance,
-often more so than the model class itself. LibKGE aims to provide *clean
-implementations* of training, hyperparameter optimization, and evaluation
-strategies that can be used with any model. Every potential knob or heuristic
-implemented in the framework is exposed explicitly via *well-documented*
-configuration files (e.g., see [here](kge/config-default.yaml) and
-[here](kge/model/embedder/lookup_embedder.yaml)). LibKGE also provides the most
-common KGE models and new ones can be easily added (contributions welcome!).
+LibKGE的主要目标是促进对KGE模型和训练方法的可重复的研究（以及有意义的比较）。在我们的文章中 [ICLR 2020 paper](https://github.com/uma-pi1/kge-iclr20) 有更多介绍
+(see [video](https://iclr.cc/virtual_2020/poster_BkxSmlBFvr.html)), 
+训练策略和超参数的选择对模型的性能有很大的影响，往往比模型类别本身的影响更大。LibKGE旨在为训练、超参数优化和评估策略提供清晰的实现，
+可用于任何模型。框架中实现的每一个潜在的旋钮或启发式方法都通过*有据可查的*配置文件明确地暴露出来。(e.g., see [here](kge/config-default.yaml) and
+[here](kge/model/embedder/lookup_embedder.yaml)). 
+LibKGE还提供了最常见的KGE模型，并且可以很容易地添加新的模型（欢迎贡献！）。
 
-For link prediction tasks, rule-based systems such as
-[AnyBURL](http://web.informatik.uni-mannheim.de/AnyBURL/) are a competitive
-alternative to KGE.
+对于链接预测任务，基于规则的系统，如 [AnyBURL](http://web.informatik.uni-mannheim.de/AnyBURL/) 是KGE的一个有竞争力的选择。
 
-## Quick start
+## 快速开始
 
 ```sh
-# retrieve and install project in development mode
+#在开发模式下检索并安装项目 
 git clone https://github.com/uma-pi1/kge.git
 cd kge
 pip install -e .
 
-# download and preprocess datasets
+# 下载和预处理数据集
 cd data
 sh download_all.sh
 cd ..
 
-# train an example model on toy dataset (you can omit '--job.device cpu' when you have a gpu)
+# 在toy数据集上训练一个例子模型（当你有一个gpu时，你可以省略'--job.device cpu'。)
 kge start examples/toy-complex-train.yaml --job.device cpu
 
 ```
 
-## Table of contents
+## 目录
 
 1. [Features](#features)
 2. [Results and pretrained models](#results-and-pretrained-models)
@@ -54,29 +43,27 @@ kge start examples/toy-complex-train.yaml --job.device cpu
 9. [Other KGE frameworks](#other-kge-frameworks)
 10. [How to cite](#how-to-cite)
 
-## Features
+## 特点
 
- - **Training**
-   - Training types: negative sampling, 1vsAll, KvsAll
+ - **训练**
+   - 训练形式: negative sampling, 1vsAll, KvsAll
    - Losses: binary cross entropy (BCE), Kullback-Leibler divergence (KL),
      margin ranking (MR), squared error (SE)
-   - All optimizers and learning rate schedulers of PyTorch supported and can be
-     chosen individually for different parameters (e.g., different for entity
-     and for relation embeddings)
+   - 支持PyTorch的所有优化器和学习率调度器，可以针对不同的参数单独选择（例如，实体和关系嵌入的参数不同）。
    - Learning rate warmup
    - Early stopping
    - Checkpointing
    - Stop (e.g., via `Ctrl-C`) and resume at any time
-   - Automatic memory management to support large batch sizes (see config key `train.subbatch_auto_tune`)
- - **Hyperparameter tuning**
+   - 自动内存管理以支持大批次的工作  (see config key `train.subbatch_auto_tune`)
+ - **超参数优化**
    - Grid search, manual search, quasi-random search (using
      [Ax](https://ax.dev/)), Bayesian optimization (using [Ax](https://ax.dev/))
    - Highly parallelizable (multiple CPUs/GPUs on single machine)
    - Stop and resume at any time
- - **Evaluation**
+ - **评估**
    - Entity ranking metrics: Mean Reciprocal Rank (MRR), HITS@k with/without filtering
    - Drill-down by: relation type, relation frequency, head or tail
- - **Extensive logging and tracing**
+ - **扩展日志和tracing**
    - Detailed progress information about training, hyper-parameter tuning, and evaluation 
      is recorded in machine readable formats
    - Quick export of all/selected parts of the traced data into CSV or YAML files to 
