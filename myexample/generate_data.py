@@ -30,7 +30,7 @@ def get_data(save_json_path='data.json', use_cache=True):
             triple_data = json.load(f)
     else:
         print(f"连接neo4j数据库,获取数据")
-        graph = Graph(host='192.168.50.189', user='neo4j', password='welcome', name='neo4j', port=7687)
+        graph = Graph(host='l8', user='neo4j', password='welcome', name='neo4j', port=7687)
         # 存储查询到的三元组数据
         triple_data = []
         print(f"开始查询三元组数据")
