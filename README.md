@@ -28,6 +28,23 @@ cd ..
 # 在toy数据集上训练一个例子模型（当你有一个gpu时，你可以省略'--job.device cpu'。)
 kge start examples/toy-complex-train.yaml --job.device cpu
 
+# 训练完成结果保存到kge/local目录下：
+tree experiments/20220421-105739-toy-complex-train/
+experiments/20220421-105739-toy-complex-train/
+├── checkpoint_00000.pt
+├── checkpoint_00005.pt
+├── checkpoint_00010.pt
+├── checkpoint_00015.pt
+├── checkpoint_00020.pt
+├── checkpoint_best.pt
+├── config
+│   ├── 3b87a893.yaml
+│   └── 8e6d6792.yaml
+├── config.yaml
+├── kge.log
+└── trace.yaml
+
+1 directory, 11 files
 ```
 
 ## 目录
@@ -414,28 +431,14 @@ KGE工作执行训练、评估和超参数搜索。 The relevant base classes ar
 
 要添加一个组件，例如`mycomp`（=一个模型、嵌入器或job），并实现`MyClass`，你需要。
 
-1. Create a configuration file `mycomp.yaml`. You may store this file directly
-   in the LibKGE module folders (e.g., `<kge-home>/kge/model/`) or in your own
-   module folder. If you plan to contribute your code to LibKGE, we suggest to
-   directly develop in the LibKGE module folders. If you just want to play
-   around or publish your code separately from LibKGE, use your own module.
+1. 创建一个配置文件`mycomp.yaml`。你可以把这个文件直接存放在LibKGE的模块文件夹中（例如，`<kge-home>/kge/model/`）或你自己的模块文件夹中。如果您打算将您的代码贡献给LibKGE，我们建议直接在LibKGE模块文件夹中开发。如果您只是想在LibKGE之外玩玩或发布您的代码，请使用您自己的模块。
 
-2. Define all required options for your component, their default values, and
-   their types in `mycomp.yaml`. We suggest to follow LibKGE's core philosophy
-   and define every option that can influence the outcome of an experiment in
-   this way. Please pay attention w.r.t. integer (`0`) vs. float (`0.0`) values;
-   e.g., `float_option: 0` is incorrect because is interpreted as an integer.
+2. 在`mycomp.yaml`中定义你的组件所需的所有选项，它们的默认值，以及它们的类型。我们建议遵循LibKGE的核心理念，以这种方式定义每一个能影响实验结果的选项。请注意整数(0)与浮点数(0.0)的关系；例如，`float_option: 0 "是不正确的，因为它被解释为一个整数。
 
-3. Implement `MyClass` in a module of your choice. In `mycomp.yaml`, add key
-   `mycomp.class_name` with value `MyClass`. If you follow LibKGE's directory
-   structure (`mycomp.yaml` for configuration and `mycomp.py` for
-   implementation), then ensure that `MyClass` is imported in `__init__.py`
-   (e.g., as done [here](kge/model/__init__.py)).
+3. 在你选择的模块中实现`MyClass'。在`mycomp.yaml`中，添加键`mycomp.class_name`和值`MyClass`。如果你遵循LibKGE的目录结构（`mycomp.yaml`用于配置，`mycomp.py`用于实现），那么确保`MyClass`在`__init__.py`中被导入。
+(e.g., as done [here](kge/model/__init__.py)).
 
-4. To use your component in an experiment, register your module via the
-   `modules` key and its configuration via the `import` key in the experiment's
-   configuration file. See [config-default.yaml](kge/config-default.yaml) for a
-   description of those keys. For example, in `myexp_config.yaml`, add:
+4. 要在一个实验中使用你的组件，通过`modules`键注册你的模块，通过实验配置文件中的`import`键注册其配置。参见 [config-default.yaml](kge/config-default.yaml) 以了解这些键的描述。例如，在`myexp_config.yaml`中，添加。
 
    ```yaml
    modules: [ kge.job, kge.model, kge.model.embedder, mymodule ]
